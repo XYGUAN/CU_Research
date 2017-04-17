@@ -2,24 +2,32 @@ library(ggplot2)
 library(leaflet)
 library(ggvis)
 library(dplyr)
-load("data/WaterLevelTimeSeries_No_Human.RData")
-load("data/WaterLevelTimeSeries_All.RData")
-load("data/Overview_DATA.RData")
 
-Names <- names(WaterLevel_No_Human_Mean_Monsoon)[2:6]
-Names_NoHuman <- c("Bahadurabad", "Chilmari", "Kanaighat", "Sarighat", "Sherpur")
-
-Plot_Explorer_Input <- c("Year", "Monsoon", "Non_Monsoon", "Production")
-
-Locations <- names(WaterLevel_All_Mean_Monsoon)[-1]
-
-Production_Locations <- unique(Overview_DATA[Overview_DATA$Types == "Production",]$variable)
-  
 navbarPage("Hilsa Fish",
-           # Interactive map
-#            tabPanel("About",
-#                     h1("Introduction")
-#            ),
+           
+           #################
+           ##### About #####
+           #################
+           
+            tabPanel("About",
+                     navlistPanel(
+                       "Table of Content",
+                       tabPanel("Introduction",
+                                includeMarkdown("Introduction.md")
+                       ),
+                       tabPanel("PCA Analysis",
+                                includeMarkdown("Analysis/PCA/PCA_Analysis.md")
+                                ),
+                       tabPanel("User Manual",
+                                includeMarkdown("Analysis/PCA/PCA_Analysis.md")
+                       )
+                       )
+            ),
+           
+           ###############
+           ##### Map #####
+           ###############
+           
            tabPanel("Interactive Map",
                     div(class="outer",
                         tags$head(
@@ -28,30 +36,37 @@ navbarPage("Hilsa Fish",
                           includeScript("gomap.js")
                         ),
                         
-                        leafletOutput("map", width="100%", height="100%"), 
-                        absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-                                      draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
-                                      width = 330, height = "auto",
+                        leafletOutput("map", width="100%", height="100%"),
+
+                        absolutePanel(id = "controls", class = "panel panel-default", fixed = FALSE,
+                                      draggable = TRUE, top = 10, left = "auto", right = 10, bottom = "auto",
+                                      width = 300, height = "100%", cursor = "move",
+
+                                      h3("Correlational Analysis"),
+
+                                      radioButtons("CorrelationType", "Correlational Types:",
+                                                   c("WaterLevel: No_human vs. others" = "WL vs. WL",
+                                                     "Production vs. WaterLevel" = "Production vs. WL",
+                                                     "WaterLevel vs. Principle Components" = "WaterLevel vs. PCs", 
+                                                     "Production vs. Principle Components" = "Production vs. PCs")),
                                       
-                                      h2("Hilsa explorer"),
+                                      selectInput("locations", "Target Locations", c(Names_NoHuman)),
+                                      # selectInput("location_PR", "Target Production Location", c("Bangladesh_Inland", "Bangladesh_Ocean")),
+                                      # selectInput("location_PCA", "Target PCA Location", c(PCA_Locations, "Non_Human")),
                                       
-                                      radioButtons("types", "Analytical Types:",
-                                                   c("Overview" = "overview",
-                                                     "Correlation Analysis" = "correlation")),
-                                      
-                                      checkboxGroupInput('variables', 'Analytical Variables:',
-                                                         c("Monsoon", "Non_Monsoon", "Production"), selected = "Monsoon"),
-                                      
-                                      selectInput("location", "Location", Names_NoHuman),
-                                      sliderInput("year", "Year", 1970, 2016, value = 1970, step = 1),
-                                      selectInput("size", "Size", Names_NoHuman, selected = "adultpop")
-                                      
-                        )
+                                      tags$body(paste(
+                                        "Note: Please based on the chosen type to choose the Target variables",
+                                        "E.X. If you choose Production vs. WaterLevel, then change location_PR",
+                                        "Otherwise it doesn't work"
+                                      ))
                     )
-                    
+                    ) 
                     
            ),
            
+           ################
+           ##### Plot #####
+           ################
            
            tabPanel("Plot Explorer",
                     fluidRow(
@@ -71,15 +86,22 @@ navbarPage("Hilsa Fish",
                         plotOutput("plots")
                       )
                     )
-                    
+                        ),
+           
+           
                     
                     #                     checkboxGroupInput("checkGroup", label = h3("Checkbox group"), 
                     #                                        choices = list("Bahadurabad" = "Bahadurabad", "Chilmari" = "Chilmari", "Kanaighat" = "Kanaighat", "Sarighat" = "Sarighat", "Sherpur" = "Sherpur"),
                     #                                        selected = 1)
                     
-           ),
+           ######################################################################## 
            
-           tabPanel("Data Explorer",
+           
+           #################
+           ##### Table #####
+           #################
+           
+           tabPanel("Raw data",
                     sidebarLayout(
                       sidebarPanel(
                         selectInput('WaterLevel', 'WaterLevel', Names)
