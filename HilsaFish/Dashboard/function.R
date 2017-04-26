@@ -183,6 +183,12 @@ Get_SVD <- function(Matrix_In, threhold, similarity_threshold){
 }
 
 
+Plot_Exploration <- function(x_variables = "Year", y_variables, DATA){
+  Data_Temp <- DATA[DATA$variable %in% y_variables,]
+  ggplot(Data_Temp, aes(x = Year, y = value, color = variable)) + geom_point() + 
+    ggtitle("Time Series") + geom_smooth(method = "lm") + theme(axis.text.x=element_text(angle=90)) 
+  
+}
 
 
 

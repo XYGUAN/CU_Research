@@ -26,7 +26,7 @@ CorrelationType <- c("WaterLevel: No_human vs. others",
                      "Bangeladesh_Inland(FAO) & Water_Level locations",
                      "Bangeladesh_Ocean(FAO) & Water_Level locations")
 
-Plot_Explorer_Input <- c("Year", "Monsoon", "Non_Monsoon", "Production")
+Plot_Explorer_Input <- c("Monsoon", "Non_Monsoon", "Production")
 
 Locations <- names(WaterLevel_All_Mean_Monsoon)[-1]
 
@@ -51,6 +51,11 @@ names(Names_list)[[2]] <- "Production vs. WL"
 names(Names_list)[[3]] <- "WaterLevel vs. PCs"
 names(Names_list)[[4]] <- "Production vs. PCs"
 
+Names_list_Plot <- list()
+Names_list_Plot[[length(Names_list_Plot) + 1]] <- "Year"
+Names_list_Plot[[length(Names_list_Plot) + 1]] <- Plot_Explorer_Input
+names(Names_list_Plot)[[1]] <- "plot_TimeSeries"
+names(Names_list_Plot)[[2]] <- "plot_VariableAnalytics"
 
 # Fish_Production <- read.xls("data/hilsa_FAOdata.xlsx", sheet = 3, header = FALSE)
 # names(Fish_Production) <- c("Year", "Production")

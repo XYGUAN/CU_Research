@@ -10,19 +10,11 @@ navbarPage("Hilsa Fish",
            #################
            
             tabPanel("About",
-                     navlistPanel(
-                       "Table of Content",
-                       tabPanel("Introduction",
-                                includeMarkdown("Introduction.md")
+                      includeMarkdown("Analysis/Introduction.md")
+                       # tabPanel("PCA Analysis",
+                       #          includeMarkdown("Analysis/PCA/PCA_Analysis.md")
+                       #          )
                        ),
-                       tabPanel("PCA Analysis",
-                                includeMarkdown("Analysis/PCA/PCA_Analysis.md")
-                                ),
-                       tabPanel("User Manual",
-                                includeMarkdown("Analysis/PCA/PCA_Analysis.md")
-                       )
-                       )
-            ),
            
            ###############
            ##### Map #####
@@ -73,12 +65,13 @@ navbarPage("Hilsa Fish",
                       column(3,
                              wellPanel(
                                sliderInput("year", "Year Range", 1970, 2016, value = c(1970, 2016)),
-                               checkboxGroupInput('Plot_Options', 'Options',
-                                                  c("Abline")),
-                               selectInput("plot_x_input", "x_axis", Plot_Explorer_Input, selected = "Year"),
+                               radioButtons("Plot_Analytics_Types","Analytical Types:",
+                                            c("Time-Series Analytics" = "plot_TimeSeries",
+                                              "Variables Analytics" = "plot_VariableAnalytics")),
+                               selectInput("plot_x_input", "x_axis", "Year", selected = "Year"),
                                selectInput("plot_y_input", "y_axis", Plot_Explorer_Input, selected = "Monsoon"),
-                               selectInput("targetLocation_WaterLevel", "Target Location Water Level", Locations, selected = "Amalshid"),
-                               selectInput("targetLocation_Production", "Target Location Production", Production_Locations, selected = "Bangladesh_Inland")
+                               selectInput("targetLocation_WaterLevel", "Target Location Water Level", Locations, multiple = TRUE, selectize = TRUE),
+                               selectInput("targetLocation_Production", "Target Location Production", Production_Locations, multiple = TRUE, selectize = TRUE)
                              )
                              
                       ),
@@ -101,15 +94,37 @@ navbarPage("Hilsa Fish",
            ##### Table #####
            #################
            
-           tabPanel("Raw data",
+           tabPanel("Data Explorer",
                     sidebarLayout(
                       sidebarPanel(
-                        selectInput('WaterLevel', 'WaterLevel', Names)
+
+                        #boxes to choose from monsoon, non-monsoon, and production
+                        checkboxGroupInput('type', 'Raw Data', names(table(Overview_DATA$Type)), selected = 'Monsoon'),
+                      
+                        #selectInput for all water level stations (for all variable attributes) : for monsoon and non monsoon
+                        selectInput('name', 'Water Level Stations:',choices = c("All", names(table(Overview_DATA$variable[0:10250])))  ,  selected = "All", multiple = TRUE, selectize = TRUE),
+                        
+                        #selectInput for all production stations
+                        selectInput('names', 'Production Stations:', choices = c("All", names(table(Overview_DATA$variable[10250:10781])))  ,  selected = NULL, multiple = TRUE, selectize = TRUE)
+                        #leave option for all names
+                        #first is actual variable that will be used in serve , second is shown to user, third is options
                       ),
                       mainPanel(
-                        tableOutput('table')
+                        #adds tabs to the main panel to choose between geo info or overview data
+                        tabsetPanel(
+                          tabPanel("Raw Data", tableOutput('table')),
+                          tabPanel("Geological Data", tableOutput('table2'))
+                          
+                          #trying to get search button to work for years, but was crashing program
+                          #tabPanel(selectizeInput('year', 'Search for year',  names(table(Overview_DATA$Year)), selected = NULL, multiple = FALSE,
+                          # options = list(
+                          # placeholder = 'Please select an option below',
+                          # onInitialize = I('function() { this.setValue(""); }')
+                          # )))
+                        )
                       )
-                    )
-           )
+                    ) 
            
+)
+
 )

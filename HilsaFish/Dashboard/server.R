@@ -108,59 +108,74 @@ function(input, output, session) {
   ##### Plots #####
   #################
   
-  ################ Original Plot ################ 
+  ################ Original Plot ################
+  observe({
+  b <- input$Plot_Analytics_Types
+  
+  updateSelectInput(session, "plot_x_input",
+                    label = "x_axis",
+                    choices = c(Names_list_Plot[[b]]))
+  })
+                  
   output$plots <- renderPlot({
+    ################################################################################ 
+    # if(xvar_name == "Year"){
+    #   DATA_PLOT <- Overview_DATA[Overview_DATA$Types == yvar_name,]
+    #   if(yvar_name == "Production" & xvar_name == "Year"){
+    #     DATA_PLOT <- DATA_PLOT[DATA_PLOT$variable == input$targetLocation_Production,]
+    #     DATA_PLOT <- DATA_PLOT[!is.na(DATA_PLOT$value),]
+    #     DATA_PLOT$Year <- as.numeric(DATA_PLOT$Year)
+    #     PLOT <- ggplot(DATA_PLOT, aes(x = Year, y = value)) + geom_point() + 
+    #       geom_smooth(method = "lm") +
+    #       xlab(xvar_name) + ylab(yvar_name) + 
+    #       ggtitle(paste("The relationship between", yvar_name, "and", xvar_name, "in", input$targetLocation_Production))
+    #   }else{
+    #     DATA_PLOT <- DATA_PLOT[DATA_PLOT$variable == input$targetLocation_WaterLevel,]
+    #     DATA_PLOT <- DATA_PLOT[!is.na(DATA_PLOT$value),]
+    #     DATA_PLOT$Year <- as.numeric(DATA_PLOT$Year)
+    #     PLOT <- ggplot(DATA_PLOT, aes(x = Year, y = value)) + geom_point() +
+    #       geom_smooth(method = "lm") + 
+    #       xlab(xvar_name) + ylab(yvar_name) + 
+    #       ggtitle(paste("The relationship between", yvar_name, "and", xvar_name, "in", input$targetLocation_WaterLevel))
+    #     
+    #   }
+    #   PLOT
+    # }
+    # 
+    # if(xvar_name == "Monsoon" & yvar_name == "Production"){
+    #   DATA_PLOT_X <- Overview_DATA[Overview_DATA$Types == xvar_name,]
+    #   DATA_PLOT_Y <- Overview_DATA[Overview_DATA$Types == yvar_name,]
+    #   DATA_PLOT_X <- DATA_PLOT_X[DATA_PLOT_X$variable == input$targetLocation_WaterLevel,]
+    #   DATA_PLOT_Y <- DATA_PLOT_Y[DATA_PLOT_Y$variable == input$targetLocation_Production,]
+    #   DATA_PLOT <- data.frame(DATA_PLOT_Y$Year, DATA_PLOT_Y$value)
+    #   names(DATA_PLOT) <- c("Year", "Production")
+    #   DATA_PLOT$WL <- NA
+    #   for(i in 1:nrow(DATA_PLOT)){
+    #     DATA_PLOT$WL[i] <- DATA_PLOT_X$value[which(DATA_PLOT_X$Year %in% DATA_PLOT$Year[i])]
+    #   }
+    #   PLOT <- ggplot(DATA_PLOT, aes(x = WL, y = Production)) + geom_point() + 
+    #     geom_smooth(method = "lm") +
+    #     xlab(xvar_name) + ylab(yvar_name) + 
+    #     ggtitle(paste("The relationship between", yvar_name, "and", xvar_name, "in", input$targetLocation_Production))
+    #   PLOT
+    # }
+    # PLOT
+    ################################################################################ 
     xvar_name <- input$plot_x_input
     yvar_name <- input$plot_y_input
     Target_Waterlevel <- input$targetLocation_WaterLevel
     Target_Production <- input$targetLocation_Production
-    
-    if(xvar_name == "Year"){
-      DATA_PLOT <- Overview_DATA[Overview_DATA$Types == yvar_name,]
-      if(yvar_name == "Production" & xvar_name == "Year"){
-        DATA_PLOT <- DATA_PLOT[DATA_PLOT$variable == input$targetLocation_Production,]
-        DATA_PLOT <- DATA_PLOT[!is.na(DATA_PLOT$value),]
-        DATA_PLOT$Year <- as.numeric(DATA_PLOT$Year)
-        PLOT <- ggplot(DATA_PLOT, aes(x = Year, y = value)) + geom_point() + 
-          geom_smooth(method = "lm") +
-          xlab(xvar_name) + ylab(yvar_name) + 
-          ggtitle(paste("The relationship between", yvar_name, "and", xvar_name, "in", input$targetLocation_Production))
-      }else{
-        DATA_PLOT <- DATA_PLOT[DATA_PLOT$variable == input$targetLocation_WaterLevel,]
-        DATA_PLOT <- DATA_PLOT[!is.na(DATA_PLOT$value),]
-        DATA_PLOT$Year <- as.numeric(DATA_PLOT$Year)
-        PLOT <- ggplot(DATA_PLOT, aes(x = Year, y = value)) + geom_point() +
-          geom_smooth(method = "lm") + 
-          xlab(xvar_name) + ylab(yvar_name) + 
-          ggtitle(paste("The relationship between", yvar_name, "and", xvar_name, "in", input$targetLocation_WaterLevel))
-        
-      }
-      PLOT
-      # if(input$Plot_Options == "Abline"){
-      #   PLOT + geom_smooth()
-      # }else{
-      #   PLOT
-      # }
+    Year_low <- input$year[1]
+    Year_high <- input$year[2]
+    Data_Temp <- Overview_DATA[Overview_DATA$Year >= Year_low & Overview_DATA$Year <= Year_high, ]
+    if(yvar_name == "Monsoon"){
+      Plot_Exploration(x_variables = "Year", y_variables = Target_Waterlevel, DATA = Data_Temp[Data_Temp$Types == "Monsoon",])
+    }else if(yvar_name == "Non_Monsoon"){
+        Plot_Exploration(x_variables = "Year", y_variables = Target_Waterlevel, DATA = Data_Temp[Data_Temp$Types == "Non_Monsoon",])
+    }else{
+      Plot_Exploration(x_variables = "Year", y_variables = Target_Production, DATA = Data_Temp)
     }
     
-    if(xvar_name == "Monsoon" & yvar_name == "Production"){
-      DATA_PLOT_X <- Overview_DATA[Overview_DATA$Types == xvar_name,]
-      DATA_PLOT_Y <- Overview_DATA[Overview_DATA$Types == yvar_name,]
-      DATA_PLOT_X <- DATA_PLOT_X[DATA_PLOT_X$variable == input$targetLocation_WaterLevel,]
-      DATA_PLOT_Y <- DATA_PLOT_Y[DATA_PLOT_Y$variable == input$targetLocation_Production,]
-      DATA_PLOT <- data.frame(DATA_PLOT_Y$Year, DATA_PLOT_Y$value)
-      names(DATA_PLOT) <- c("Year", "Production")
-      DATA_PLOT$WL <- NA
-      for(i in 1:nrow(DATA_PLOT)){
-        DATA_PLOT$WL[i] <- DATA_PLOT_X$value[which(DATA_PLOT_X$Year %in% DATA_PLOT$Year[i])]
-      }
-      PLOT <- ggplot(DATA_PLOT, aes(x = WL, y = Production)) + geom_point() + 
-        geom_smooth(method = "lm") +
-        xlab(xvar_name) + ylab(yvar_name) + 
-        ggtitle(paste("The relationship between", yvar_name, "and", xvar_name, "in", input$targetLocation_Production))
-      PLOT
-    }
-    PLOT
   })
 
   
@@ -198,16 +213,38 @@ function(input, output, session) {
   #################
   ##### table #####
   #################
-  # Filter data based on selections
-  # output$table <- renderTable({
-  #   Matrix <- cbind(Catchfish_River[1:8], WaterLevel_No_Human_Mean_Monsoon[32:45,input$WaterLevel])
-  #   names(Matrix)[ncol(Matrix)] <- input$WaterLevel
-  #   Cor <- cor(Matrix, use = "complete")
-  #   TABLE <- data.frame(names(Matrix), Cor[9,])
-  #   TABLE$P_Value <- 0
-  #   for(i in 1:nrow(TABLE)){
-  #     TABLE$P_Value[i] <- cor.test(as.numeric(unlist(Matrix[i])), as.numeric(unlist(Matrix[9])))$p.value
-  #   }
-  #   names(TABLE) <- c("River", "Correlation", "p_value")
-  #   TABLE
+  #creating table for the overview data
+  output$table <- renderTable  ({
+    # TABLE
+    #table is updated every time the boxes are checked
+    Table <- Overview_DATA[Overview_DATA$Type == input$type,]
+    
+    #if production is chose
+    if (input$type == 'Production' || is.null(input$type)){
+      
+      #if initial input for the names is all, just show the table
+      if (input$names =="All") {Table}
+   
+      #if not, show the location user is looking for
+      else {Table[Table$variable == input$names,]}
+    }
+    
+    #if he chose monsoon or non-monsoon, do the same thing
+    else{
+      
+      if (input$name == "All") {Table}
+      else { Table[Table$variable == input$name,]}
+   
+    }
+
+  })
+  
+  
+  #second table for the geological data
+  output$table2 <- renderTable  ({
+    # TABLE
+    #to add other options, change name each time and only in the end show the table
+    Table3 <- GeoInfo
+    Table3
+  })
 }
