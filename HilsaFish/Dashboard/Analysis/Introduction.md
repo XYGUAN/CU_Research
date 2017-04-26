@@ -2,9 +2,11 @@ Introduction
 =======================
 
 This dashboard is for the research of the Hilsa Fish. The advantages of this dashboard is:
-* *Comprehensive:* Most information can be compressed into only one or two pages, which is useful to explore
-* *Reproducible:* People can reproduce the results and outcome only by changing the input variables. Just one click and the similar research can be reproduced. 
-*Status:* This dashboard is a beta version. It is like a draft for the further research. 
+* **Comprehensive:** Most information can be compressed into only one or two pages, which is useful to explore
+* **Reproducible:** People can reproduce the results and outcome only by changing the input variables. Just one click and the similar research can be reproduced. 
+
+***Status:*** This dashboard is a beta version. It is like a draft for the further research. 
+
 
 ## Function
 
