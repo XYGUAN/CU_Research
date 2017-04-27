@@ -85,6 +85,16 @@ function(input, output, session) {
       }
     }
     
+    if(input$CorrelationType == "PCs vs. PCs"){ 
+        SelectedName <- "Bahadurabad"
+        Data_Temp <- dcast(Overview_DATA[Overview_DATA$Types == "Monsoon" & Overview_DATA$variable %in% c(SelectedName, "Serajgang", "Sunamganj", "Comilla"), ], Year ~ variable)
+        Data_Temp <- Data_Temp[-1]
+        Data_Temp <- Data_Temp[,colSums(is.na(Data_Temp))<(nrow(Data_Temp)-10)]
+        DATA_COR_MAP <- CorrelationMap(Data_Temp, SelectedName, GeoInfo)
+        PlotMap(DATA_COR_MAP,input,SelectedName)
+    }
+    
+    
     if(input$CorrelationType == "Production vs. PCs"){ 
       # Production and WaterLevel
       SelectedName <- input$locations
@@ -183,11 +193,6 @@ function(input, output, session) {
   
   
   ################################################################
-
-      
-      
-      
-    
     
     # if(xvar_name == "Monsoon" & yvar_name == "Production"){
     #   DATA_PLOT_X <- Overview_DATA[Overview_DATA$Types == xvar_name,]
