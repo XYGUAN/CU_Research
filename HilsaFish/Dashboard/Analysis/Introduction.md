@@ -7,7 +7,7 @@ This dashboard is for the research of the Hilsa Fish. The advantages of this das
 
 ***Status:*** This dashboard is a beta version. It is like a draft for the further research. 
 
-***Author:*** Xiuyang Guan; Felipe Marujo Grabowsky
+***Author:*** *Xiuyang Guan; Felipe Marujo Grabowsky*
 
 
 ## Function
