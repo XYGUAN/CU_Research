@@ -40,7 +40,8 @@ navbarPage("Hilsa Fish",
                                                    c("WaterLevel: No_human vs. others" = "WL vs. WL",
                                                      "Production vs. WaterLevel" = "Production vs. WL",
                                                      "WaterLevel vs. Principle Components" = "WaterLevel vs. PCs", 
-                                                     "Production vs. Principle Components" = "Production vs. PCs")),
+                                                     "Production vs. Principle Components" = "Production vs. PCs",
+                                                     "Non_Human PCs vs. All PCs" = "PCs vs. PCs")),
                                       
                                       selectInput("locations", "Target Locations", c(Names_NoHuman)),
                                       # selectInput("location_PR", "Target Production Location", c("Bangladesh_Inland", "Bangladesh_Ocean")),
@@ -128,3 +129,4 @@ navbarPage("Hilsa Fish",
 )
 
 )
+
